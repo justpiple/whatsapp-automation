@@ -1,6 +1,6 @@
 # WhatsApp Bot
 
-WhatsApp Bot implementation using [@whiskeysockets/baileys](https://github.com/WhiskeySockets/Baileys) with Bun
+WhatsApp Automation implementation using [@whiskeysockets/baileys](https://github.com/WhiskeySockets/Baileys) with Bun
 
 ## Requirements
 
