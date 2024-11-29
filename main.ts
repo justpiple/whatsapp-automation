@@ -46,11 +46,11 @@ const question = (text: string): Promise<string> =>
 async function createWhatsAppConnection(
   sessionName: string,
   store: ReturnType<typeof makeInMemoryStore>,
+  usePairingCode: boolean,
 ) {
   const { state, saveCreds } = await useMultiFileAuthState(
     getSessionPath(sessionName),
   );
-  const usePairingCode = process.argv.includes("--use-pairing-code");
 
   const { version, isLatest } = await fetchLatestBaileysVersion();
   console.log(`Using WA v${version.join(".")}, isLatest: ${isLatest}`);
@@ -95,7 +95,7 @@ async function createWhatsAppConnection(
         DisconnectReason.loggedOut;
 
       if (shouldReconnect) {
-        createWhatsAppConnection(sessionName, store);
+        createWhatsAppConnection(sessionName, store, usePairingCode);
       } else {
         console.log("Connection closed. You are logged out.");
       }
@@ -139,9 +139,18 @@ async function getMessage(
 
 async function main() {
   try {
-    const sessionName = sanitizeSessionName(
-      await question("Masukkan nama session: "),
+    const usePairingCode = process.argv.includes("--use-pairing-code");
+
+    const sessionArgIndex = process.argv.findIndex((arg) =>
+      arg.startsWith("--session="),
     );
+
+    const sessionName =
+      sessionArgIndex !== -1
+        ? sanitizeSessionName(
+            process.argv[sessionArgIndex].split("=")[1]?.trim() || "",
+          )
+        : sanitizeSessionName(await question("Masukkan nama session: "));
 
     const store = makeInMemoryStore({ logger });
     const storePath = getStorePath(sessionName);
@@ -152,7 +161,7 @@ async function main() {
       store?.writeToFile(storePath);
     }, STORE_SAVE_INTERVAL);
 
-    await createWhatsAppConnection(sessionName, store);
+    await createWhatsAppConnection(sessionName, store, usePairingCode);
   } catch (error) {
     console.error("Error in main:", error);
     process.exit(1);

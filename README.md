@@ -27,6 +27,12 @@ Start with Pairing Code:
 bun start --use-pairing-code
 ```
 
+Start with Session name:
+
+```bash
+bun start --session=mysession
+```
+
 ## Project Structure
 
 ```
@@ -34,7 +40,7 @@ bun start --use-pairing-code
 │   ├── utils/
 │   │   ├── atomics.ts    # Session utils
 │   │   ├── message.ts    # Message utils
-│   ├── index.ts         # Entry point
-├── sessions/            # Auth sessions
-└── wa-logs.txt         # Logs
+│   ├── index.ts          # Entry point
+├── sessions/             # Auth sessions
+└── wa-logs.txt           # Logs
 ```
